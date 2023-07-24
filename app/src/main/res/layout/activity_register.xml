@@ -18,18 +18,21 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
                 android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fullNameTil"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fullNameEt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
-                        android:hint="FULL NAME"
+                        android:hint="@string/full_name"
                         android:inputType="text">
                 </com.google.android.material.textfield.TextInputEditText>
 
@@ -38,34 +41,41 @@
 
             <!--second input-->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailTil"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="12dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailEt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
-                        android:hint="EMAIL"
-                        android:inputType="text">
+                        android:hint="@string/email"
+                        android:inputType="textEmailAddress">
                 </com.google.android.material.textfield.TextInputEditText>
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <!--third input-->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/passwordTil"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:counterEnabled="true"
                     app:counterMaxLength="15"
-                    app:passwordToggleEnabled="true">
+                    app:passwordToggleEnabled="true"
+                    android:layout_marginTop="12dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/passwordEt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
-                        android:hint="PASSWORD"
+                        android:paddingVertical="12dp"
+                        android:hint="@string/password"
                         android:maxLength="15"
                         android:inputType="textPassword">
                 </com.google.android.material.textfield.TextInputEditText>
@@ -74,29 +84,35 @@
 
             <!--fourth input-->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/cPasswordTil"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     app:counterEnabled="true"
                     app:counterMaxLength="15"
                     app:passwordToggleEnabled="true"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="12dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/cPasswordEt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
-                        android:hint="FULL NAME"
-                        android:inputType="text">
+                        android:hint="@string/confirm_password"
+                        android:maxLength="15"
+                        android:inputType="textPassword">
                 </com.google.android.material.textfield.TextInputEditText>
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/registerBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="REGTSTER"
+                    android:text="@string/register"
+                    android:layout_marginTop="8dp"
                     style="@style/Widget.MaterialComponents.Button">
 
             </com.google.android.material.button.MaterialButton>
