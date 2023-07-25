@@ -8,12 +8,18 @@ import android.util.Patterns
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import com.example.authentication.databinding.ActivityRegisterBinding
+import com.example.authentication.repository.AuthRepository
+import com.example.authentication.utils.APIService
+import com.example.authentication.view_model.RegisterActivityViewModel
+import com.example.authentication.view_model.RegisterActivityViewModelFactory
 import java.util.regex.Pattern
 
 class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusChangeListener,View.OnKeyListener {
 
     private lateinit var mBinding: ActivityRegisterBinding
+    private lateinit var mViewModel: RegisterActivityViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityRegisterBinding.inflate(LayoutInflater.from(this))
@@ -22,6 +28,22 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
         mBinding.emailEt.onFocusChangeListener = this
         mBinding.passwordEt.onFocusChangeListener = this
         mBinding.cPasswordEt.onFocusChangeListener = this
+        mViewModel = ViewModelProvider(this,RegisterActivityViewModelFactory(AuthRepository(APIService.getService()),application)).get(RegisterActivityViewModel::class.java)
+        setupObservers()
+    }
+
+    private fun setupObservers() {
+        mViewModel.getIsLoading().observe(this){
+
+        }
+
+        mViewModel.getErrorMessage().observe(this){
+
+        }
+
+        mViewModel.getUser().observe(this){
+
+        }
     }
 
     private fun validateFullName():Boolean{

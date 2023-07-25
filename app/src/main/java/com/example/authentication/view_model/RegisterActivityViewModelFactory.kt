@@ -8,6 +8,7 @@ import java.security.InvalidParameterException
 
 class RegisterActivityViewModelFactory(private val authRepository: AuthRepository,private val application: Application): ViewModelProvider.Factory {
 
+    @Suppress("UNCHECKED_CASE")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(RegisterActivityViewModel::class.java)){
             return RegisterActivityViewModel(authRepository,application) as T
