@@ -7,7 +7,30 @@
         android:layout_height="match_parent"
         tools:context=".RegisterActivity">
 
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_constraintLeft_toLeftOf="parent"
+            android:layout_constraintLeft_toRighttOf="parent"
+            android:layout_constraintLeft_toTopOf="parent"
+            android:layout_constraintLeft_toBottomOf="parent"
+            android:background="#800000000"
+            android:id="@+id/progressBar"
+            android:elevation="100dp">
+
+        <ProgressBar android:layout_width="36dp"
+                     android:layout_height="36dp"
+                     android:elevation="100dp"
+                     android:indeterminate="true"/>
+
+    </RelativeLayout>
+
     <com.google.android.material.card.MaterialCardView
+            android:layout_constraintLeft_toLeftOf="parent"
+            android:layout_constraintLeft_toRighttOf="parent"
+            android:layout_constraintLeft_toTopOf="parent"
             android:layout_width="360dp"
             android:layout_height="664dp"
             android:layout_margin="12dp"

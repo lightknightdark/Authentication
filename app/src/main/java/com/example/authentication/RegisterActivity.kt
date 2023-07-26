@@ -4,19 +4,25 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Patterns
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import com.example.authentication.data.ValidateEmailBody
 import com.example.authentication.databinding.ActivityRegisterBinding
 import com.example.authentication.repository.AuthRepository
 import com.example.authentication.utils.APIService
 import com.example.authentication.view_model.RegisterActivityViewModel
 import com.example.authentication.view_model.RegisterActivityViewModelFactory
+import java.lang.StringBuilder
 import java.util.regex.Pattern
 
-class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusChangeListener,View.OnKeyListener {
+class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusChangeListener,View.OnKeyListener,TextWatcher {
 
     private lateinit var mBinding: ActivityRegisterBinding
     private lateinit var mViewModel: RegisterActivityViewModel
@@ -28,16 +34,80 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
         mBinding.emailEt.onFocusChangeListener = this
         mBinding.passwordEt.onFocusChangeListener = this
         mBinding.cPasswordEt.onFocusChangeListener = this
+        mBinding.cPasswordEt.setOnKeyListener(this)
         mViewModel = ViewModelProvider(this,RegisterActivityViewModelFactory(AuthRepository(APIService.getService()),application)).get(RegisterActivityViewModel::class.java)
         setupObservers()
     }
 
     private fun setupObservers() {
         mViewModel.getIsLoading().observe(this){
+          mBinding.progressBar.isVisible = it
+
+        }
+
+        mViewModel.getIsUnique().observe(this){
+            if(validateEmail(shouldUpdateView = false)){
+                if(it){
+                    mBinding.emailTil.apply {
+                        if(isErrorEnabled) isErrorEnabled = false
+                        setStartIconDrawable(R.drawable.baseline_check_circle_24)
+                        setStartIconTintList(ColorStateList.valueOf(Color.GREEN))
+                    }
+                }else{
+                    mBinding.emailTil.apply {
+                        if(startIconDrawable != null) startIconDrawable = null
+                        isErrorEnabled = true
+                        error = "Email is already taken"
+                    }
+                }
+            }
 
         }
 
         mViewModel.getErrorMessage().observe(this){
+            val formErrorKeys = arrayOf("fullName","email","password")
+            val message = StringBuilder()
+            it.map { entry ->
+                if(formErrorKeys.contains(entry.key)){
+                    when(entry.key){
+                        "fullName" ->{
+                            mBinding.fullNameTil.apply {
+                                isErrorEnabled = true
+                                error = entry.key
+                            }
+
+                        }
+
+                        "email" ->{
+                            mBinding.emailTil.apply {
+                                isErrorEnabled = true
+                                error = entry.key
+
+                        }
+
+                            }
+                        "password" ->{
+                            mBinding.passwordTil.apply {
+                                isErrorEnabled = true
+                                error = entry.key
+
+                            }
+
+                        }
+                    }
+                }else{
+                    message.append(entry.value).append("\n")
+                }
+
+                if(message.isNotEmpty()){
+                    AlertDialog.Builder(this)
+                        .setIcon(R.drawable.info_24)
+                        .setTitle("INFORMATION")
+                        .setMessage(message)
+                        .setPositiveButton("OK"){dialog,_ -> dialog!!.dismiss()}
+                        .show()
+                }
+            }
 
         }
 
@@ -62,7 +132,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
         return errorMessage == null
     }
 
-    private fun validateEmail():Boolean{
+    private fun validateEmail(shouldUpdateView: Boolean = true):Boolean{
         var errorMessage :String? = null
         val value:String = mBinding.emailEt.text.toString()
         if(value.isEmpty()){
@@ -72,7 +142,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
         }
 
 
-        if(errorMessage!=null){
+        if(errorMessage!=null && shouldUpdateView){
             mBinding.emailTil.apply {
                 isErrorEnabled = true
                 error = errorMessage
@@ -84,7 +154,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
     }
 
 
-    private fun  validatePassword():Boolean{
+    private fun  validatePassword(shouldUpdateView: Boolean = true):Boolean{
         var errorMessage :String? = null
         val value:String = mBinding.passwordEt.text.toString()
         if(value.isEmpty()){
@@ -93,7 +163,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
             errorMessage = "Password must be 6 characters long"
         }
 
-        if(errorMessage!=null){
+        if(errorMessage!=null && shouldUpdateView){
             mBinding.passwordTil.apply {
                 isErrorEnabled = true
                 error = errorMessage
@@ -105,7 +175,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
     }
 
 
-    private fun validateConfirmPassword():Boolean{
+    private fun validateConfirmPassword(shouldUpdateView: Boolean = true):Boolean{
         var errorMessage :String? = null
         val value:String = mBinding.cPasswordEt.text.toString()
         if(value.isEmpty()){
@@ -114,7 +184,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
             errorMessage = "Confirm Password must be 6 characters long"
         }
 
-        if(errorMessage!=null){
+        if(errorMessage!=null && shouldUpdateView){
             mBinding.cPasswordTil.apply {
                 isErrorEnabled = true
                 error = errorMessage
@@ -126,7 +196,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
         return errorMessage == null
     }
 
-    private fun validatePasswordAndConfirmPassword():Boolean{
+    private fun validatePasswordAndConfirmPassword(shouldUpdateView: Boolean = true):Boolean{
         var errorMessage :String? = null
         val password = mBinding.passwordEt.text.toString()
         val confirmPassowrd = mBinding.cPasswordEt.text.toString()
@@ -134,7 +204,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
             errorMessage = "confirm password does not match with password"
         }
 
-        if(errorMessage!=null){
+        if(errorMessage!=null && shouldUpdateView){
             mBinding.cPasswordTil.apply {
                 isErrorEnabled = true
                 error = errorMessage
@@ -169,7 +239,9 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
                         }
 
                     }else{
-                        if(validateEmail()){}
+                        if(validateEmail()){
+                            mViewModel.validateEmailAddress(ValidateEmailBody(mBinding.emailEt.text!!.toString()))
+                        }
 
                     }
                 }
@@ -214,6 +286,31 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener,View.OnFocusC
     }
 
     override fun onKey(view: View?, event: Int, keyEvent: KeyEvent?): Boolean {
+
+        if(validatePassword( shouldUpdateView = false) && validateConfirmPassword(shouldUpdateView = false) && validatePasswordAndConfirmPassword(shouldUpdateView = false)){
+            mBinding.cPasswordTil.apply {
+                if(isErrorEnabled) isErrorEnabled = false
+                setStartIconDrawable(R.drawable.baseline_check_circle_24)
+                setStartIconTintList(ColorStateList.valueOf(Color.GREEN))
+            }
+        }else {
+               if(mBinding.cPasswordTil.startIconDrawable != null) mBinding.cPasswordTil.startIconDrawable = null
+
+
+
+        }
      return false
+    }
+
+    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun afterTextChanged(p0: Editable?) {
+        TODO("Not yet implemented")
     }
 }
