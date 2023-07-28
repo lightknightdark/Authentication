@@ -5,4 +5,7 @@
     <string name="password">PASSWORD</string>
     <string name="confirm_password">CONFIRM PASSWORD</string>
     <string name="register">REGISTER</string>
+    <string name="login" />
+    <string name="loginWithGoogle" />
+    <string name="newUserInfo" />
 </resources>
